@@ -17,3 +17,15 @@ const about=document.querySelector('#about');if(about)about.after(section);else 
 const dialog=document.createElement('dialog');dialog.className='brand-dialog';dialog.innerHTML='<button class="close" aria-label="关闭品牌产品详情">×</button><div class="brand-dialog-body"></div>';document.body.append(dialog);dialog.querySelector('.close').onclick=()=>dialog.close();dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close();}});dialog.addEventListener('close',()=>document.body.classList.remove('modal-open'));
 function open(p){dialog.querySelector('.brand-dialog-body').innerHTML=`<h2>${p[1]}</h2><p>${p[2]}</p>${(p[7]||[p[3]]).map((img,i)=>`<img src="${asset(img)}" alt="${p[1]} · 产品及包装图${i+1}" loading="lazy">`).join('')}<h3>${p[4]}</h3><div class="brand-spec">${p[5]}</div><p>${p[6]}</p><p class="brand-source">资料展示，实际配置以具体款式与合作方案为准。</p>`;dialog.showModal();document.body.classList.add('modal-open');}
 })();
+// Remove only the duplicate low-resolution landscape business licence.
+(()=>{
+ function installQualificationFix(){
+  if(typeof show!=='function'||typeof slides==='undefined')return;
+  const previousShow=show;
+  show=function(page){
+   if(Number(page)===4){const qualification=slides[3];if(qualification&&Array.isArray(qualification.images))qualification.images=qualification.images.filter(src=>!/(^|\/)business-license\.webp(?:[?#].*)?$/.test(src));}
+   return previousShow.apply(this,arguments);
+  };
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',installQualificationFix,{once:true});else installQualificationFix();
+})();
